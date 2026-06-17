@@ -13,7 +13,7 @@ INDICATORS = [
     {
         "id": "worldbank_gdp_growth",
         "indicator_code": "NY.GDP.MKTP.KD.ZG",
-        "title": "World GDP Growth Rate by Country (1960-2024) | World Bank",
+        "title": "World GDP Growth Rate by Country (1960-2024)",
         "description": "Annual GDP growth rate (%) for all countries from 1960 to 2024. "
                       "Sourced from the World Bank Open Data under CC-BY 4.0. "
                       "Ideal for macroeconomic analysis, forecasting, and global trend studies.",
@@ -23,7 +23,7 @@ INDICATORS = [
     {
         "id": "worldbank_population",
         "indicator_code": "SP.POP.TOTL",
-        "title": "World Population by Country (1960-2024) | World Bank",
+        "title": "World Population by Country (1960-2024)",
         "description": "Total population for all countries and regions from 1960 to 2024. "
                       "World Bank Open Data, CC-BY 4.0. Perfect for demographic studies and ML features.",
         "tags": ["demographics", "population", "world-bank", "sociology", "global"],
@@ -32,7 +32,7 @@ INDICATORS = [
     {
         "id": "worldbank_co2_emissions",
         "indicator_code": "EN.ATM.CO2E.PC",
-        "title": "CO2 Emissions Per Capita by Country | World Bank",
+        "title": "CO2 Emissions Per Capita by Country",
         "description": "CO2 emissions in metric tons per capita by country. "
                       "World Bank Open Data, CC-BY 4.0. Essential for climate change analysis.",
         "tags": ["climate", "co2", "environment", "world-bank", "sustainability"],
@@ -41,7 +41,7 @@ INDICATORS = [
     {
         "id": "worldbank_internet_users",
         "indicator_code": "IT.NET.USER.ZS",
-        "title": "Internet Users (% of Population) by Country | World Bank",
+        "title": "Internet Users (% of Population) by Country",
         "description": "Percentage of individuals using the Internet for all countries. "
                       "World Bank Open Data, CC-BY 4.0. Great for digital divide and tech adoption studies.",
         "tags": ["internet", "technology", "digital", "world-bank", "global"],

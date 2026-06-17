@@ -13,7 +13,7 @@ OWID_DATASETS = [
     {
         "id": "owid_global_energy_consumption",
         "url": "https://raw.githubusercontent.com/owid/energy-data/master/owid-energy-data.csv",
-        "title": "Global Energy Consumption by Country (OWID) — Coal, Oil, Gas, Renewables",
+        "title": "Global Energy Consumption by Country OWID",
         "description": (
             "Comprehensive energy consumption dataset covering all countries from 1900 to present. "
             "Includes coal, oil, gas, nuclear, solar, wind, hydro, and total energy data. "
@@ -26,7 +26,7 @@ OWID_DATASETS = [
     {
         "id": "owid_covid19_data",
         "url": "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv",
-        "title": "COVID-19 Complete Global Dataset — OWID (Cases, Deaths, Vaccines)",
+        "title": "COVID-19 Complete Global Dataset OWID",
         "description": (
             "The most comprehensive COVID-19 dataset available. Covers cases, deaths, "
             "hospitalizations, testing, and vaccinations for all countries. "
@@ -40,7 +40,7 @@ OWID_DATASETS = [
     {
         "id": "owid_world_happiness",
         "url": "https://raw.githubusercontent.com/owid/owid-datasets/master/datasets/World%20Happiness%20Report%202023/World%20Happiness%20Report%202023.csv",
-        "title": "World Happiness Report 2023 — Country Rankings & Scores",
+        "title": "World Happiness Report 2023",
         "description": (
             "World Happiness Report data showing happiness scores and rankings by country. "
             "Includes GDP per capita, social support, health, freedom, and corruption metrics. "

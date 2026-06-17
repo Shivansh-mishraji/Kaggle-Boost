@@ -79,7 +79,7 @@ class NASAScraper:
             apod_df = self._fetch_apod(200)
             results.append({
                 "id": "nasa_apod_archive",
-                "title": "NASA Astronomy Picture of the Day — Complete Archive",
+                "title": "NASA Astronomy Picture of the Day Archive",
                 "description": (
                     "NASA's Astronomy Picture of the Day (APOD) archive with titles, "
                     "explanations, media types, and URLs. Public domain data from NASA. "
@@ -101,7 +101,7 @@ class NASAScraper:
             neo_df = self._fetch_neo()
             results.append({
                 "id": "nasa_near_earth_objects",
-                "title": "NASA Near Earth Objects (Asteroids) — Weekly Feed",
+                "title": "NASA Near Earth Objects Asteroids",
                 "description": (
                     "Near Earth Objects tracked by NASA's Jet Propulsion Laboratory. "
                     "Includes asteroid size, velocity, miss distance, and hazard classification. "

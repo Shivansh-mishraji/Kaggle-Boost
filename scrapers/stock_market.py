@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 STOCK_COLLECTIONS = [
     {
         "id": "nifty50_historical_prices",
-        "title": "NIFTY 50 Stocks — 5-Year Historical OHLCV Data (India NSE)",
+        "title": "NIFTY 50 Stocks 5 Year OHLCV NSE",
         "description": (
             "Complete 5-year daily OHLCV (Open, High, Low, Close, Volume) data for all 50 stocks "
             "in India's NIFTY 50 index. Data from Yahoo Finance. "
@@ -31,7 +31,7 @@ STOCK_COLLECTIONS = [
     },
     {
         "id": "global_tech_stocks_sp500",
-        "title": "Top 20 Global Tech Stocks — 5-Year OHLCV (FAANG + More)",
+        "title": "FAANG Tech Stocks 5 Year OHLCV",
         "description": (
             "5-year daily OHLCV price history for top global technology stocks including "
             "Apple, Microsoft, Google, Amazon, Meta, Tesla, NVIDIA, and more. "

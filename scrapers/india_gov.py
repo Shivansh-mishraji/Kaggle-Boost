@@ -12,7 +12,7 @@ INDIA_DATASETS = [
     {
         "id": "india_air_quality_index",
         "resource_id": "3b01bcb8-0b14-4abf-b6f2-c1bfd384ba69",
-        "title": "India Air Quality Index (AQI) by City — data.gov.in",
+        "title": "India Air Quality Index (AQI) by City",
         "description": (
             "Real-time and historical Air Quality Index (AQI) data across Indian cities. "
             "Includes PM2.5, PM10, NO2, SO2, CO, and Ozone readings. "
@@ -25,7 +25,7 @@ INDIA_DATASETS = [
     {
         "id": "india_covid_statewise",
         "resource_id": "b0d4e7b0-0b14-4abf-b6f2-c1bfd384ba69",
-        "title": "India COVID-19 State-wise Statistics — data.gov.in",
+        "title": "India COVID-19 State-wise Statistics",
         "description": (
             "State-wise COVID-19 case data for India including confirmed, recovered, "
             "and deceased counts. Government of India official data."
@@ -40,7 +40,7 @@ FALLBACK_SOURCES = [
     {
         "id": "india_population_census",
         "url": "https://raw.githubusercontent.com/datameet/india-election-data/master/votes-by-constituency/GE2014.csv",
-        "title": "India General Elections 2014 — Constituency-level Votes",
+        "title": "India General Elections 2014",
         "description": (
             "Constituency-level voting data from India's 2014 General Elections. "
             "Includes candidate names, party, total votes, and winner information. "
@@ -52,7 +52,7 @@ FALLBACK_SOURCES = [
     {
         "id": "india_ipl_matches",
         "url": "https://raw.githubusercontent.com/harsha547/IPL-Cricket-Stats/master/data/match.csv",
-        "title": "IPL Cricket Match Statistics (2008-2023) — Complete Dataset",
+        "title": "IPL Cricket Match Statistics (2008-2023)",
         "description": (
             "Complete Indian Premier League (IPL) cricket match statistics from 2008 to 2023. "
             "Includes teams, venue, toss, result, player of the match, and win margins. "
