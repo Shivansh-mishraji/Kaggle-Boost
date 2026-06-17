@@ -1,0 +1,103 @@
+name: 🚀 KaggleBoost — Auto Scrape & Upload
+
+on:
+  # ⏰ Run automatically every 3 days at 6:00 AM UTC (11:30 AM IST)
+  schedule:
+    - cron: '0 6 */3 * *'
+
+  # 🖱️ Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (scrape but do not upload)?'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+jobs:
+  kaggle-boost:
+    name: Scrape, Clean & Upload Datasets
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # 2-hour max (well within GitHub's free limit)
+
+    steps:
+      # ──────────────────────────────────────────────
+      # 1. Checkout the repository
+      # ──────────────────────────────────────────────
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # ──────────────────────────────────────────────
+      # 2. Set up Python
+      # ──────────────────────────────────────────────
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      # ──────────────────────────────────────────────
+      # 3. Install dependencies
+      # ──────────────────────────────────────────────
+      - name: 📦 Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # ──────────────────────────────────────────────
+      # 4. Create required directories
+      # ──────────────────────────────────────────────
+      - name: 📁 Create Working Directories
+        run: |
+          mkdir -p tmp/raw tmp/packaged logs
+
+      # ──────────────────────────────────────────────
+      # 5. Configure Kaggle credentials from secrets
+      # ──────────────────────────────────────────────
+      - name: 🔑 Configure Kaggle API
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+        run: |
+          mkdir -p ~/.kaggle
+          echo '{"username":"'$KAGGLE_USERNAME'","key":"'$KAGGLE_KEY'"}' > ~/.kaggle/kaggle.json
+          chmod 600 ~/.kaggle/kaggle.json
+          echo "Kaggle credentials configured ✅"
+
+      # ──────────────────────────────────────────────
+      # 6. Run the KaggleBoost pipeline
+      # ──────────────────────────────────────────────
+      - name: 🤖 Run KaggleBoost Pipeline
+        env:
+          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          python main.py
+
+      # ──────────────────────────────────────────────
+      # 7. Save logs as artifacts (viewable in GitHub)
+      # ──────────────────────────────────────────────
+      - name: 📊 Upload Run Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaggleboost-logs-${{ github.run_number }}
+          path: |
+            logs/
+          retention-days: 30
+
+      # ──────────────────────────────────────────────
+      # 8. Commit updated upload history back to repo
+      # ──────────────────────────────────────────────
+      - name: 💾 Commit Upload History
+        if: success()
+        run: |
+          git config --local user.email "kaggleboost@github-actions"
+          git config --local user.name "KaggleBoost Bot"
+          git add logs/upload_history.json || true
+          git diff --staged --quiet || git commit -m "🤖 KaggleBoost: Update upload history [skip ci]"
+          git push || true
