@@ -47,7 +47,7 @@ class KaggleUploader:
         """Check if a dataset already exists on Kaggle."""
         full_ref = f"{self.username}/{dataset_slug}"
         result = subprocess.run(
-            ["kaggle", "datasets", "status", full_ref],
+            ["python", "-m", "kaggle", "datasets", "status", full_ref],
             capture_output=True, text=True
         )
         return result.returncode == 0
@@ -72,7 +72,7 @@ class KaggleUploader:
             # Create a new version
             logger.info(f"Dataset {dataset_slug} exists. Creating new version...")
             cmd = [
-                "kaggle", "datasets", "version",
+                "python", "-m", "kaggle", "datasets", "version",
                 "-p", str(package_path),
                 "-m", f"Auto-updated by KaggleBoost — fresh data pull",
                 "--dir-mode", "zip"
@@ -81,7 +81,7 @@ class KaggleUploader:
             # Create new dataset
             logger.info(f"Creating new dataset: {dataset_slug}")
             cmd = [
-                "kaggle", "datasets", "create",
+                "python", "-m", "kaggle", "datasets", "create",
                 "-p", str(package_path),
                 "--dir-mode", "zip"
             ]
@@ -99,7 +99,7 @@ class KaggleUploader:
                 logger.debug(f"Kaggle CLI output: {result.stdout}")
                 return True, kaggle_url
             else:
-                logger.error(f"❌ Upload failed for {dataset_slug}:\n{result.stderr}")
+                logger.error(f"❌ Upload failed for {dataset_slug}:\nSTDOUT: {result.stdout}\nSTDERR: {result.stderr}")
                 return False, ""
 
         except subprocess.TimeoutExpired:
