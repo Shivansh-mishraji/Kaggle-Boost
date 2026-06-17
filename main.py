@@ -15,13 +15,23 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 
-# ── Windows UTF-8 fix: prevent UnicodeEncodeError for emoji in cp1252 terminals
+# Windows UTF-8 fix: prevent UnicodeEncodeError for emoji in cp1252 terminals
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
+
+# Load .env file
+env_file = Path(".env")
+if env_file.exists():
+    for line in env_file.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip())
+
 
 from rich.console import Console
 from rich.table import Table
@@ -32,6 +42,8 @@ from scrapers.nasa_data import NASAScraper
 from scrapers.india_gov import IndiaGovScraper
 from scrapers.owid import OWIDScraper
 from scrapers.stock_market import StockMarketScraper
+from scrapers.crypto_market import CryptoMarketScraper
+from scrapers.open_meteo import OpenMeteoScraper
 from scrapers.trending import TrendingTopicsScraper
 from processors.cleaner import DataCleaner
 from processors.packager import DatasetPackager
@@ -79,6 +91,8 @@ def get_active_scrapers(run_mode: str = "auto") -> list:
         NASAScraper(),          # Space/climate — always trending
         OWIDScraper(),          # Health, environment — popular for analysis
         StockMarketScraper(),   # Finance — extremely high demand
+        CryptoMarketScraper(),  # Crypto — extremely high demand
+        OpenMeteoScraper(),     # Weather — essential ML dataset
     ]
     return all_scrapers
 
