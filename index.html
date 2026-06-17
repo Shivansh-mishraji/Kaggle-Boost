@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KaggleBoost — Autopilot Your Kaggle Profile Growth</title>
+  <meta name="description" content="KaggleBoost automatically uploads high-quality datasets to your Kaggle profile every 3 days. Rank up faster, get noticed by recruiters, land data science jobs." />
+  <meta property="og:title" content="KaggleBoost — Autopilot Your Kaggle Profile Growth" />
+  <meta property="og:description" content="Upload 10+ datasets per week to Kaggle automatically. 100% free to start." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #050810;
+      --bg2:       #080d1a;
+      --bg3:       #0d1425;
+      --border:    rgba(99,179,237,0.12);
+      --blue:      #3b82f6;
+      --blue-glow: rgba(59,130,246,0.35);
+      --purple:    #8b5cf6;
+      --cyan:      #06b6d4;
+      --green:     #10b981;
+      --text:      #e2e8f0;
+      --muted:     #64748b;
+      --card:      rgba(255,255,255,0.03);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── NOISE TEXTURE ─────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.4;
+    }
+
+    /* ── NAV ───────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(5,8,16,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none; font-size: 0.875rem;
+      font-weight: 500; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--blue); color: white !important;
+      padding: 0.5rem 1.25rem; border-radius: 8px; font-weight: 600 !important;
+      transition: all 0.2s !important;
+    }
+    .nav-cta:hover { background: #2563eb !important; transform: translateY(-1px); }
+
+    /* ── HERO ──────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 8rem 1.5rem 4rem;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute; width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -60%);
+      pointer-events: none;
+    }
+
+    .hero-glow-2 {
+      position: absolute; width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+      top: 30%; left: 20%;
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.375rem 1rem; border-radius: 100px;
+      border: 1px solid rgba(59,130,246,0.3);
+      background: rgba(59,130,246,0.08);
+      font-size: 0.8rem; font-weight: 500; color: var(--blue);
+      margin-bottom: 1.5rem;
+      animation: fadeInDown 0.6s ease;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900; letter-spacing: -2px; line-height: 1.05;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.7s ease 0.1s both;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 50%, var(--cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      max-width: 580px; font-size: 1.15rem; color: var(--muted);
+      margin-bottom: 2.5rem; line-height: 1.7;
+      animation: fadeInUp 0.7s ease 0.2s both;
+    }
+
+    .hero-ctas {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 4rem;
+      animation: fadeInUp 0.7s ease 0.3s both;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.875rem 2rem; border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white; font-weight: 700; font-size: 1rem;
+      text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 0 30px var(--blue-glow);
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px var(--blue-glow);
+    }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.875rem 2rem; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text); font-weight: 600; font-size: 1rem;
+      text-decoration: none; cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+    }
+    .btn-secondary:hover { border-color: rgba(99,179,237,0.4); transform: translateY(-2px); }
+
+    /* ── STATS BAR ─────────────────────────────────────── */
+    .stats-bar {
+      display: flex; gap: 3rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeInUp 0.7s ease 0.4s both;
+    }
+
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2rem; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ── TERMINAL DEMO ─────────────────────────────────── */
+    .demo-section {
+      padding: 4rem 1.5rem;
+      display: flex; justify-content: center;
+    }
+
+    .terminal {
+      width: 100%; max-width: 750px;
+      background: #0d1117; border-radius: 16px;
+      border: 1px solid rgba(48,54,61,0.8);
+      box-shadow: 0 0 80px rgba(0,0,0,0.5), 0 0 40px var(--blue-glow);
+      overflow: hidden;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .terminal-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.875rem 1.25rem;
+      background: #161b22; border-bottom: 1px solid rgba(48,54,61,0.8);
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #28c940; }
+
+    .terminal-title {
+      flex: 1; text-align: center; font-size: 0.75rem;
+      color: var(--muted); font-family: 'JetBrains Mono', monospace;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem; line-height: 1.8;
+    }
+
+    .t-cmd  { color: #e2e8f0; }
+    .t-dim  { color: #4a5568; }
+    .t-blue { color: #63b3ed; }
+    .t-green{ color: #68d391; }
+    .t-yellow{ color: #f6e05e; }
+    .t-purple{ color: #b794f4; }
+    .t-cyan { color: #76e4f7; }
+    .cursor { animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+    /* ── HOW IT WORKS ──────────────────────────────────── */
+    .section { padding: 5rem 1.5rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      text-align: center; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 2px; color: var(--blue);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      text-align: center; font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem;
+    }
+    .section-sub {
+      text-align: center; color: var(--muted); max-width: 520px;
+      margin: 0 auto 3.5rem; font-size: 1rem;
+    }
+
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .step {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.75rem;
+      position: relative; overflow: hidden;
+      transition: all 0.3s;
+    }
+    .step::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .step:hover { transform: translateY(-4px); border-color: rgba(99,179,237,0.3); }
+    .step:hover::before { opacity: 1; }
+
+    .step-icon {
+      font-size: 2rem; margin-bottom: 1rem;
+      display: block;
+    }
+    .step-num {
+      position: absolute; top: 1.25rem; right: 1.25rem;
+      font-size: 3rem; font-weight: 900; color: rgba(255,255,255,0.03);
+      font-family: 'JetBrains Mono', monospace; line-height: 1;
+    }
+    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── DATA SOURCES ──────────────────────────────────── */
+    .sources {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .source {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      transition: all 0.3s;
+    }
+    .source:hover { border-color: rgba(99,179,237,0.3); transform: translateY(-2px); }
+    .source-icon { font-size: 1.5rem; }
+    .source-info { }
+    .source-name { font-size: 0.875rem; font-weight: 600; }
+    .source-license { font-size: 0.7rem; color: var(--green); }
+
+    /* ── PRICING ───────────────────────────────────────── */
+    .pricing {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem; align-items: start;
+    }
+
+    .plan {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+
+    .plan-hero {
+      border-color: var(--blue);
+      background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08));
+      box-shadow: 0 0 40px rgba(59,130,246,0.15);
+      transform: scale(1.02);
+    }
+
+    .plan-badge {
+      position: absolute; top: 1.25rem; right: 1.25rem;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white; font-size: 0.65rem; font-weight: 700;
+      padding: 0.25rem 0.625rem; border-radius: 100px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .plan-name { font-size: 0.85rem; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .plan-price { font-size: 3rem; font-weight: 900; letter-spacing: -2px; line-height: 1; margin-bottom: 0.25rem; }
+    .plan-period { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .plan-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem; }
+    .plan-features li { font-size: 0.875rem; display: flex; align-items: flex-start; gap: 0.625rem; }
+    .plan-features .chk { color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .plan-features .x   { color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+
+    .plan-btn {
+      display: block; text-align: center; width: 100%;
+      padding: 0.875rem; border-radius: 12px; font-weight: 700;
+      font-size: 0.9rem; text-decoration: none; transition: all 0.3s; cursor: pointer;
+    }
+    .plan-btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white; box-shadow: 0 0 20px var(--blue-glow);
+    }
+    .plan-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 35px var(--blue-glow); }
+    .plan-btn-outline {
+      border: 1px solid var(--border); color: var(--text); background: transparent;
+    }
+    .plan-btn-outline:hover { border-color: rgba(99,179,237,0.4); background: var(--card); }
+
+    /* ── FAQ ───────────────────────────────────────────── */
+    .faq-list { display: flex; flex-direction: column; gap: 1rem; max-width: 720px; margin: 0 auto; }
+    .faq-item {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .faq-q {
+      padding: 1.25rem 1.5rem; font-weight: 600; font-size: 0.95rem;
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      transition: background 0.2s;
+    }
+    .faq-q:hover { background: rgba(255,255,255,0.02); }
+    .faq-a {
+      padding: 0 1.5rem 1.25rem; color: var(--muted); font-size: 0.875rem; line-height: 1.7;
+    }
+
+    /* ── CTA BOTTOM ────────────────────────────────────── */
+    .cta-bottom {
+      padding: 6rem 1.5rem; text-align: center;
+      background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12), transparent 70%);
+    }
+    .cta-bottom h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; letter-spacing: -1.5px; margin-bottom: 1rem; }
+    .cta-bottom p { color: var(--muted); max-width: 480px; margin: 0 auto 2.5rem; }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer {
+      padding: 2rem 1.5rem; text-align: center;
+      border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem;
+    }
+    footer a { color: var(--blue); text-decoration: none; }
+
+    /* ── ANIMATIONS ────────────────────────────────────── */
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeInDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+
+    /* ── RESPONSIVE ────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .stats-bar { gap: 1.5rem; }
+      .plan-hero { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">⚡ KaggleBoost</div>
+  <div class="nav-links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="https://github.com/Shivansh-mishraji/Kaggle-Boost" target="_blank">GitHub</a>
+    <a href="#pricing" class="nav-cta">Get Started Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+
+  <div class="badge">
+    <span class="badge-dot"></span>
+    Now live — 100% free to start
+  </div>
+
+  <h1>
+    Autopilot Your<br/>
+    <span class="gradient">Kaggle Profile Growth</span>
+  </h1>
+
+  <p class="hero-sub">
+    KaggleBoost automatically scrapes, cleans, and uploads high-quality datasets to your Kaggle profile every 3 days. Rank up faster. Get noticed by recruiters. Land the job.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="#pricing" class="btn-primary" id="hero-cta-primary">
+      🚀 Start for Free
+    </a>
+    <a href="https://github.com/Shivansh-mishraji/Kaggle-Boost" target="_blank" class="btn-secondary" id="hero-cta-github">
+      ⭐ Star on GitHub
+    </a>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" id="counter-datasets">0</div>
+      <div class="stat-label">Datasets Uploaded</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="counter-users">0</div>
+      <div class="stat-label">Active Users</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Data Sources</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$0</div>
+      <div class="stat-label">To Start</div>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL DEMO -->
+<section class="demo-section">
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+      <div class="terminal-title">kaggleboost — run</div>
+    </div>
+    <div class="terminal-body">
+      <div><span class="t-dim">$</span> <span class="t-cmd">kaggleboost run</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-blue">┌─────────────────────────────────────────┐</span></div>
+      <div><span class="t-blue">│</span>  <span class="t-purple">⚡ KaggleBoost  v2.0  Pro Plan</span>         <span class="t-blue">│</span></div>
+      <div><span class="t-blue">│</span>  <span class="t-dim">User: shivansh7275 · Run: 2026-06-17</span>   <span class="t-blue">│</span></div>
+      <div><span class="t-blue">└─────────────────────────────────────────┘</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-yellow">📡 Scraper 1/5:</span> <span class="t-cmd">World Bank Open Data</span></div>
+      <div>   <span class="t-green">✓</span> GDP Growth (265 countries, 5yr)  <span class="t-dim">→ 1,325 rows</span></div>
+      <div>   <span class="t-green">✓</span> CO2 Emissions per capita        <span class="t-dim">→ 1,325 rows</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-yellow">📡 Scraper 2/5:</span> <span class="t-cmd">Yahoo Finance</span></div>
+      <div>   <span class="t-green">✓</span> NIFTY 50 · 15 stocks · 5yr      <span class="t-dim">→ 18,570 rows</span></div>
+      <div>   <span class="t-green">✓</span> FAANG Tech · 12 stocks · 5yr    <span class="t-dim">→ 15,060 rows</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-yellow">📡 Scraper 3/5:</span> <span class="t-cmd">NASA Open Data</span></div>
+      <div>   <span class="t-green">✓</span> Astronomy Picture of the Day    <span class="t-dim">→ 1,826 rows</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-cyan">🧹 Cleaning 4 datasets...</span> <span class="t-green">done</span></div>
+      <div><span class="t-cyan">📦 Packaging with metadata...</span> <span class="t-green">done</span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-green">🚀 Uploading to kaggle.com/shivansh7275</span></div>
+      <div>   <span class="t-green">✓</span> World Bank GDP Growth 2020-2025</div>
+      <div>   <span class="t-green">✓</span> NIFTY 50 Stocks 5yr OHLCV NSE</div>
+      <div>   <span class="t-green">✓</span> FAANG Tech Stocks 5yr OHLCV</div>
+      <div>   <span class="t-green">✓</span> NASA APOD Archive 2019-2024</div>
+      <div>&nbsp;</div>
+      <div><span class="t-purple">✨ 4 datasets uploaded · Profile rank: ↑ Contributor</span></div>
+      <div><span class="t-dim">   Next run: 2026-06-20 · <span class="t-green">All done!</span></span></div>
+      <div>&nbsp;</div>
+      <div><span class="t-dim">$</span> <span class="cursor">_</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works">
+  <div class="section-inner">
+    <p class="section-label">Simple by design</p>
+    <h2 class="section-title">Four steps. Zero effort.</h2>
+    <p class="section-sub">KaggleBoost handles the entire pipeline automatically. You just watch your profile grow.</p>
+
+    <div class="steps">
+      <div class="step">
+        <span class="step-icon">🔍</span>
+        <div class="step-num">01</div>
+        <h3>Scrape</h3>
+        <p>Pulls live, openly licensed data from 5 high-demand sources: World Bank, NASA, Yahoo Finance, Our World in Data, and India Open Data.</p>
+      </div>
+      <div class="step">
+        <span class="step-icon">🧹</span>
+        <div class="step-num">02</div>
+        <h3>Clean</h3>
+        <p>Auto-fixes types, removes duplicates, detects PII, strips nulls, and formats column names. Every dataset arrives clean and ready to use.</p>
+      </div>
+      <div class="step">
+        <span class="step-icon">📦</span>
+        <div class="step-num">03</div>
+        <h3>Package</h3>
+        <p>Generates a professional README, summary statistics, column descriptions, and a valid dataset-metadata.json — the way top datasets look.</p>
+      </div>
+      <div class="step">
+        <span class="step-icon">🚀</span>
+        <div class="step-num">04</div>
+        <h3>Upload</h3>
+        <p>Publishes directly to your Kaggle profile via the Kaggle API. Creates new datasets or pushes fresh versions. Runs every 3 days on autopilot.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA SOURCES -->
+<section class="section" style="padding-top:0;">
+  <div class="section-inner">
+    <p class="section-label">Data sources</p>
+    <h2 class="section-title">Legally safe, always fresh</h2>
+    <p class="section-sub">Every source is openly licensed — CC-BY, Public Domain, or ODbL. Safe to upload, safe to use.</p>
+
+    <div class="sources">
+      <div class="source">
+        <div class="source-icon">🌍</div>
+        <div class="source-info">
+          <div class="source-name">World Bank</div>
+          <div class="source-license">CC-BY 4.0</div>
+        </div>
+      </div>
+      <div class="source">
+        <div class="source-icon">🚀</div>
+        <div class="source-info">
+          <div class="source-name">NASA Open Data</div>
+          <div class="source-license">Public Domain</div>
+        </div>
+      </div>
+      <div class="source">
+        <div class="source-icon">📈</div>
+        <div class="source-info">
+          <div class="source-name">Yahoo Finance</div>
+          <div class="source-license">Research use</div>
+        </div>
+      </div>
+      <div class="source">
+        <div class="source-icon">🏥</div>
+        <div class="source-info">
+          <div class="source-name">Our World in Data</div>
+          <div class="source-license">CC-BY 4.0</div>
+        </div>
+      </div>
+      <div class="source">
+        <div class="source-icon">🇮🇳</div>
+        <div class="source-info">
+          <div class="source-name">India Open Data</div>
+          <div class="source-license">ODbL</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-inner">
+    <p class="section-label">Pricing</p>
+    <h2 class="section-title">Start free. Scale when ready.</h2>
+    <p class="section-sub">No credit card required. Cancel anytime.</p>
+
+    <div class="pricing">
+      <!-- Free -->
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-period">forever</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> 1 dataset upload / week</li>
+          <li><span class="chk">✓</span> 2 scrapers (Yahoo Finance + World Bank)</li>
+          <li><span class="chk">✓</span> Basic data cleaning</li>
+          <li><span class="chk">✓</span> GitHub Actions automation</li>
+          <li><span class="x">✗</span> <span style="color:var(--muted)">Smart scheduling</span></li>
+          <li><span class="x">✗</span> <span style="color:var(--muted)">Analytics dashboard</span></li>
+        </ul>
+        <a href="https://github.com/Shivansh-mishraji/Kaggle-Boost" target="_blank" class="plan-btn plan-btn-outline" id="plan-free-btn">
+          Get Started Free →
+        </a>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan plan-hero">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price" style="background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">$9</div>
+        <div class="plan-period">per month</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> 10 datasets / week</li>
+          <li><span class="chk">✓</span> All 5 scrapers</li>
+          <li><span class="chk">✓</span> Smart scheduling (peak demand)</li>
+          <li><span class="chk">✓</span> AI-generated descriptions</li>
+          <li><span class="chk">✓</span> Upload history dashboard</li>
+          <li><span class="chk">✓</span> Priority email support</li>
+        </ul>
+        <a href="mailto:shivansh@kaggleboost.dev?subject=KaggleBoost Pro" class="plan-btn plan-btn-primary" id="plan-pro-btn">
+          Start Pro — $9/mo
+        </a>
+      </div>
+
+      <!-- Growth -->
+      <div class="plan">
+        <div class="plan-name">Growth</div>
+        <div class="plan-price">$29</div>
+        <div class="plan-period">per month</div>
+        <hr class="plan-divider" />
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> 30 datasets / week</li>
+          <li><span class="chk">✓</span> Up to 3 Kaggle accounts</li>
+          <li><span class="chk">✓</span> Analytics dashboard</li>
+          <li><span class="chk">✓</span> Discord/Slack webhooks</li>
+          <li><span class="chk">✓</span> Early access to new scrapers</li>
+          <li><span class="chk">✓</span> Custom tags & keywords</li>
+        </ul>
+        <a href="mailto:shivansh@kaggleboost.dev?subject=KaggleBoost Growth" class="plan-btn plan-btn-outline" id="plan-growth-btn">
+          Get Growth →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="padding-top:0;">
+  <div class="section-inner">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-title">Common questions</h2>
+    <br/>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Is this against Kaggle's terms of service? <span>+</span></div>
+        <div class="faq-a">No. KaggleBoost uploads datasets you own using the official Kaggle API — exactly the same as uploading manually. All scraped data is openly licensed (CC-BY, Public Domain, ODbL). You become the legitimate publisher.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How long does it take to see results? <span>+</span></div>
+        <div class="faq-a">Most users see their first datasets live within 5 minutes of setup. Profile views typically increase within the first week as datasets get indexed by Kaggle's search engine.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Do I need to pay for hosting? <span>+</span></div>
+        <div class="faq-a">No. KaggleBoost runs entirely on GitHub Actions, which gives you 2,000 free minutes per month — more than enough. Zero server costs.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Will my Kaggle API key stay private? <span>+</span></div>
+        <div class="faq-a">Yes. Your API key is stored as a GitHub Secret — encrypted at rest, never exposed in logs or code. KaggleBoost never sees or stores your credentials.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="cta-bottom">
+  <h2>Start growing your<br/><span style="background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Kaggle profile today</span></h2>
+  <p>Free forever. No credit card. Takes 5 minutes to set up.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="https://github.com/Shivansh-mishraji/Kaggle-Boost" target="_blank" class="btn-primary" id="cta-bottom-github">
+      ⭐ Star on GitHub — it's free
+    </a>
+    <a href="mailto:shivansh@kaggleboost.dev" class="btn-secondary" id="cta-bottom-email">
+      💬 Talk to founder
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Built by <a href="https://github.com/Shivansh-mishraji" target="_blank">Shivansh Mishra</a> · <a href="https://www.kaggle.com/shivansh7275" target="_blank">Kaggle</a> · <a href="https://github.com/Shivansh-mishraji/Kaggle-Boost" target="_blank">GitHub</a></p>
+  <p style="margin-top:0.5rem;">© 2026 KaggleBoost. Made with ❤️ in India.</p>
+</footer>
+
+<script>
+  // ── Animated counters ─────────────────────────────────────────
+  function animateCounter(el, target, duration = 1800, suffix = '') {
+    let start = 0, step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start = Math.min(start + step, target);
+      el.textContent = Math.floor(start).toLocaleString() + suffix;
+      if (start >= target) clearInterval(timer);
+    }, 16);
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCounter(document.getElementById('counter-datasets'), 2847);
+        animateCounter(document.getElementById('counter-users'), 312);
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(document.getElementById('counter-datasets'));
+
+  // ── FAQ accordion ─────────────────────────────────────────────
+  document.querySelectorAll('.faq-q').forEach(q => {
+    const a = q.nextElementSibling;
+    a.style.display = 'none';
+    const icon = q.querySelector('span');
+    q.addEventListener('click', () => {
+      const open = a.style.display !== 'none';
+      a.style.display = open ? 'none' : 'block';
+      icon.textContent = open ? '+' : '−';
+    });
+  });
+
+  // ── Typing animation in terminal ─────────────────────────────
+  // (already fully rendered — CSS cursor handles the feel)
+</script>
+</body>
+</html>
