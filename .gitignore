@@ -1,0 +1,24 @@
+# KaggleBoost — gitignore
+
+# Secrets — NEVER commit
+.env
+kaggle.json
+~/.kaggle/
+
+# Temporary data
+tmp/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Raw log output (keep upload history)
+logs/kaggleboost.log
